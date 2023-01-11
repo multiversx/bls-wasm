@@ -1,7 +1,12 @@
 (generator => {
   if (typeof window === 'object') {
     const exports = {}
-    window.bls = generator(exports, false)
+
+    if (typeof module !== 'undefined' && module.exports) {
+      module.exports = generator(exports, false)
+    } else {
+      window.bls = generator(exports, false)
+    }
   } else {
     generator(exports, true)
   }
@@ -178,7 +183,7 @@
     }
 
     // change curveType
-    exports.blsInit = (curveType = exports.ethMode ? exports.BLS12_381 : exports.BN254) => {
+    exports.blsInit = (curveType = (exports.ethMode ? exports.BLS12_381 : exports.BN254)) => {
       const r = mod._blsInit(curveType, MCLBN_COMPILED_TIME_VAR)
       if (r) throw ('blsInit err ' + r)
     }
@@ -663,7 +668,12 @@
           .then(response => response.arrayBuffer())
           .then(buffer => new Uint8Array(buffer))
           .then(() => {
-            exports.mod = Module() // eslint-disable-line
+            if (typeof module !== 'undefined' && module.exports) {
+              exports.mod = require('./bls_c')()
+            } else {
+              exports.mod = Module() // eslint-disable-line
+            }
+
             exports.mod.cryptoGetRandomValues = _cryptoGetRandomValues
             exports.mod.onRuntimeInitialized = () => {
               setup(exports, curveType)
