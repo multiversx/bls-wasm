@@ -1,6 +1,6 @@
 {
   "name": "@multiversx/sdk-bls-wasm",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "BLS signature for Node.js by WebAssembly",
   "main": "bls.js",
   "scripts": {
