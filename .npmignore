@@ -4,4 +4,3 @@ bls-demo.js
 node_modules/
 coverage/
 t.js
-.travis.yml
