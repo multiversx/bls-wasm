@@ -650,10 +650,14 @@
         const crypto = require('crypto')
         exports.getRandomValues = crypto.randomFillSync
         const path = require('path')
+        const fs = require('fs')
         const js = require(`./${name}.js`)
         const Module = {
           cryptoGetRandomValues : _cryptoGetRandomValues,
-          locateFile: baseName => { return path.join(__dirname, baseName) }
+          locateFile: baseName => { return path.join(__dirname, baseName) },
+          // Provide the binary directly: on Node >= 18 the Emscripten glue would otherwise try fetch() on a file path.
+          // Guarded for bundled builds where 'fs' is stubbed (falls back to the previous behaviour).
+          wasmBinary: fs.readFileSync && fs.readFileSync(path.join(__dirname, `${name}.wasm`))
         }
         js(Module)
           .then(_mod => {
